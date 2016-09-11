@@ -33,6 +33,7 @@ end
 function Selector:Callbacks()
 	AddMsgCallback(function(msg, key) self:WndMsg(msg, key) end)
 	AddDrawCallback(function() self:Draws() end)
+	AddTickCallback(function() self:Tick() end)
 end
 
 function Selector:Update()
@@ -75,6 +76,18 @@ function Selector:WndMsg(msg, key)
 			end
 		end
 	end
+end
+
+function Selector:Tick()
+	if self.SelectedTarget ~= nil and self.SelectedTarget.dead then
+		self.LastTarget = self.SelectedTarget
+        self.SelectedTarget = nil 
+        TS_SetFocus(nil)
+        self:OrbWalkers(nil)
+        if Menu.Print then
+        	self:SendMsg("Unselected Dead Target: "..self.LastTarget.charName)
+        end
+    end
 end
 
 function Selector:Draws()
